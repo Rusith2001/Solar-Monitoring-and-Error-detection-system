@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Shared CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Custom styles for auth page -->
+    <style>
+        input, select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: #00f7ff;
+            box-shadow: 0 0 5px rgba(0, 247, 255, 0.5);
+        }
+        /* Style error messages to match glassmorphism */
+        #loginError, #signupError {
+            transition: opacity 0.3s ease;
+            background: rgba(255, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px;
+            border-radius: 8px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="container mx-auto p-6 max-w-md">
+        <!-- Toggle between Login and Signup -->
+        <div class="flex justify-center mb-6">
+            <button id="loginTab" class="glassmorphism px-4 py-2 rounded-l-lg hover-scale text-white">Login</button>
+            <button id="signupTab" class="glassmorphism px-4 py-2 rounded-r-lg hover-scale text-gray-400">Signup</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="glassmorphism p-6 rounded-lg fade-in">
+            <h2 class="text-2xl font-light mb-6 text-center">Login</h2>
+            <div class="mb-4">
+                <label class="block text-gray-400 font-light">Email</label>
+                <input type="email" id="loginEmail" class="w-full px-3 py-2 rounded-lg" required>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-400 font-light">Password</label>
+                <input type="password" id="loginPassword" class="w-full px-3 py-2 rounded-lg" required>
+            </div>
+            <button type="submit" id="loginBtn" class="w-full glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Login</button>
+            <p id="loginError" class="mt-2 text-center text-sm"></p>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="glassmorphism p-6 rounded-lg fade-in hidden">
+            <h2 class="text-2xl font-light mb-6 text-center">Signup</h2>
+            <div class="mb-4">
+                <label class="block text-gray-400 font-light">Email</label>
+                <input type="email" id="signupEmail" class="w-full px-3 py-2 rounded-lg" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-400 font-light">Password</label>
+                <input type="password" id="signupPassword" class="w-full px-3 py-2 rounded-lg" required>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-400 font-light">Role</label>
+                <select id="signupRole" class="w-full px-3 py-2 rounded-lg">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div id="adminPinContainer" class="mb-4 hidden">
+                <label class="block text-gray-400 font-light">Admin PIN</label>
+                <input type="password" id="adminPin" class="w-full px-3 py-2 rounded-lg" placeholder="Enter admin PIN">
+            </div>
+            <button type="submit" id="signupBtn" class="w-full glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Signup</button>
+            <p id="signupError" class="mt-2 text-center text-sm"></p>
+        </form>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="auth.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'932ca9e20fd41d64',t:'MTc0NTA2ODQ1Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

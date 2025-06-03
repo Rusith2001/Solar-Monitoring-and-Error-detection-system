@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Monitoring System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="flex flex-col min-h-screen">
+    <div class="container mx-auto p-8 flex-grow">
+        <!-- Header -->
+        <div class="header glassmorphism p-4 rounded-lg mb-8 flex justify-between items-center hover-scale fade-in">
+            <div class="flex items-center">
+                <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 12h3M6 9l3 3-3 3M12 6v12M15 9l3 3-3 3M18 12h3" stroke="url(#grad)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#00f7ff;stop-opacity:1"/>
+                            <stop offset="100%" style="stop-color:#ff00ff;stop-opacity:1"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1 class="text-4xl font-light glow-text">Solar Monitoring System</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <p class="text-lg font-light">Welcome, <span id="userRole" class="font-medium glow-text">User</span></p>
+                <button id="logoutBtn" class="glow-button text-white px-4 py-2 rounded-lg hover-scale transition-all duration-300">Logout</button>
+            </div>
+        </div>
+
+        <!-- System Flow Section -->
+        <div class="system-flow mb-12">
+            <!-- Solar System (dc_module_1) -->
+            <div class="block glassmorphism p-4 rounded-lg text-center hover-scale fade-in">
+                <h2 class="text-lg font-light mb-2">Solar System</h2>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="solarToggle" class="glow-toggle" disabled>
+                </label>
+            </div>
+            <!-- Arrow with Sensor Data -->
+            <div class="arrow-box glassmorphism">
+                <div class="arrow"></div>
+                <div class="sensor-data text-sm font-light">
+                    <p>V: <span id="solarVoltage">0</span> V</p>
+                    <p>I: <span id="solarCurrent">0</span> mA</p>
+                    <p>T: <span id="solarTemp">0</span> °C</p>
+                </div>
+            </div>
+            <!-- Solar Charge Controller -->
+            <div class="block glassmorphism p-4 rounded-lg text-center hover-scale fade-in">
+                <h2 class="text-lg font-light mb-2">Charge Controller</h2>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="controllerToggle" class="glow-toggle" disabled>
+                </label>
+            </div>
+            <!-- Arrow with Sensor Data -->
+            <div class="arrow-box glassmorphism">
+                <div class="arrow"></div>
+                <div class="sensor-data text-sm font-light">
+                    <p>V: <span id="controllerVoltage">0</span> V</p>
+                    <p>I: <span id="controllerCurrent">0</span> mA</p>
+                    <p>T: <span id="controllerTemp">0</span> °C</p>
+                </div>
+            </div>
+            <!-- Battery -->
+            <div class="block glassmorphism p-4 rounded-lg text-center hover-scale fade-in">
+                <h2 class="text-lg font-light mb-2">Battery</h2>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="batteryToggle" class="glow-toggle" disabled>
+                </label>
+            </div>
+            <!-- Arrow with Sensor Data -->
+            <div class="arrow-box glassmorphism">
+                <div class="arrow"></div>
+                <div class="sensor-data text-sm font-light">
+                    <p>V: <span id="batteryVoltage">0</span> V</p>
+                    <p>I: <span id="batteryCurrent">0</span> mA</p>
+                    <p>T: <span id="batteryTemp">0</span> °C</p>
+                </div>
+            </div>
+            <!-- Inverter -->
+            <div class="block glassmorphism p-4 rounded-lg text-center hover-scale fade-in">
+                <h2 class="text-lg font-light mb-2">Inverter</h2>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" id="inverterToggle" class="glow-toggle" disabled>
+                </label>
+            </div>
+            <!-- Arrow with Sensor Data -->
+            <div class="arrow-box glassmorphism">
+                <div class="arrow"></div>
+                <div class="sensor-data text-sm font-light">
+                    <p>V: <span id="inverterVoltage">0</span> V</p>
+                    <p>I: <span id="inverterCurrent">0</span> A</p>
+                    <p>T: <span id="inverterTemp">0</span> °C</p>
+                </div>
+            </div>
+            <!-- Load -->
+            <div class="block glassmorphism p-4 rounded-lg text-center hover-scale fade-in">
+                <h2 class="text-lg font-light mb-2">Load</h2>
+            </div>
+        </div>
+
+        <!-- Graphs Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Daily Power Generation -->
+            <div class="glassmorphism p-6 rounded-lg hover-scale fade-in">
+                <h2 class="text-xl font-light mb-4">Daily Power Generation</h2>
+                <canvas id="dailyChart"></canvas>
+                <div class="flex justify-center mt-4 space-x-4">
+                    <button id="downloadDailyGraph" class="glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Download Graph</button>
+                    <button id="downloadDailyData" class="glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Download Data</button>
+                </div>
+            </div>
+            <!-- Monthly Power Generation -->
+            <div class="glassmorphism p-6 rounded-lg hover-scale fade-in">
+                <h2 class="text-xl font-light mb-4">Monthly Power Generation</h2>
+                <canvas id="monthlyChart"></canvas>
+                <div class="flex justify-center mt-4 space-x-4">
+                    <button id="downloadMonthlyGraph" class="glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Download Graph</button>
+                    <button id="downloadMonthlyData" class="glassmorphism text-white px-4 py-2 rounded-lg hover-scale">Download Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Notification -->
+    <section class="container fade-in">
+        <div class="glassmorphism p-4">
+            <h2 class="text-xl font-semibold mb-4 glow-text">System Alerts</h2>
+            <div id="alerts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Alerts will be appended here dynamically -->
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="glassmorphism p-4 text-center fade-in">
+        <p class="text-sm font-light glow-text">Developed by G.A. Rusith Theekshana (22044691)</p>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="toast"></div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
